@@ -3,7 +3,8 @@
  * @param {PDFDocument} PDFDocumentInstance The PDF document obtained 
 **/
 
-let PDF_URL  = null;
+PDF_URL = `https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/${response.data.filePath}`;
+
 
 // https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com
 // https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com
