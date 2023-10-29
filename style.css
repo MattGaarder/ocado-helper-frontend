@@ -1,0 +1,93 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif; 
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 15px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+}
+
+input[type="file"], 
+input[type="checkbox"], 
+button {
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.btn {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+#ingredientsForm {
+    /* display: flex; */
+}
+
+.ingredientsList {
+    display: flex;
+    padding-top: 3rem;
+    margin-top: 1%;
+    flex-direction: column;
+}
+
+.ingredient-label {
+    position: relative;
+    cursor: pointer;
+}
+
+.ingredient-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border: 2px solid #007BFF;
+    border-radius: 3px;
+}
+
+.ingredient:checked + .ingredient-label::before {
+    background-color: #007BFF;
+}
