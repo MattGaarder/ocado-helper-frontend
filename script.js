@@ -8,42 +8,46 @@ PDF_URL = null;
 
 // https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com
 // https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com
-
-document.getElementById("pdfForm").addEventListener("submit", (event) => {
+document.getElementById("pdfForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/uploads', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    }).then(response => {
-        console.log('File uploaded successfully');
-        PDF_URL = `https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/${response.data.filePath}`;
-        fetch('./openfoodfacts.json')
-    .then(response => response.json())
-    .then(data => {
-        databaseIngredients = data.tags.map(tag => tag.name); 
-        pdfjsLib.getDocument(PDF_URL).promise.then(function (PDFDocumentInstance) {
-            var totalPages = PDFDocumentInstance.numPages;
-            var pageNumber = 1;
-            // Extract the text
-            getPageText(pageNumber, PDFDocumentInstance).then(function(textPage){
-                // Clean the text of the page
-                cleanText(textPage, databaseIngredients);
-                // Use the cleaned text in your application
-            });
-        }, function (reason) {
-            // PDF loading error
-            console.error(reason);
+    try {
+        const uploadResponse = await axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/uploads', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         });
-    })
-    .catch(error => console.error('Error:', error));
-        // processPDF();    
-    }).catch(error => {
-        console.log('Error uploading file', error);
-    })
+        console.log('File uploaded successfully');
+        PDF_URL = `https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/${uploadResponse.data.filePath}`;
+
+        const dataResponse = await fetch('./openfoodfacts.json');
+        const data = await dataResponse.json();
+        databaseIngredients = data.tags.map(tag => tag.name);
+
+        const PDFDocumentInstance = await pdfjsLib.getDocument(PDF_URL).promise;
+        const totalPages = PDFDocumentInstance.numPages;
+        const pageNumber = 1;
+        const textPage = await getPageText(pageNumber, PDFDocumentInstance);
+        const cleanedText = cleanText(textPage, databaseIngredients);
+
+        // Call async function to do the backend calls
+        await doBackendCalls(cleanedText);
+
+    } catch (error) {
+        console.log('Error:', error);
+    }
 });
+
+async function doBackendCalls(cleanedText) {
+    try {
+        await axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/ingredients', { ingredients: cleanedText });
+        await axios.get('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/notion');
+        console.log('Success handling');
+    } catch (error) {
+        console.log('Error:', error);
+    }
+}
 
 function getPageText(pageNum, PDFDocumentInstance) {
     // Return a Promise that is solved once the text of the page is retrieven
