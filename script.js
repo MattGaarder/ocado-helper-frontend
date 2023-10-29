@@ -19,7 +19,7 @@ document.getElementById("pdfForm").addEventListener("submit", (event) => {
         }
     }).then(response => {
         console.log('File uploaded successfully');
-        PDF_URL = `https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com${response.data.filePath}`;
+        PDF_URL = `https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/${response.data.filePath}`;
         fetch('./openfoodfacts.json')
     .then(response => response.json())
     .then(data => {
