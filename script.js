@@ -5,11 +5,14 @@
 
 let PDF_URL  = null;
 
+// https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com
+// https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com
+
 document.getElementById("pdfForm").addEventListener("submit", (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    axios.post('/uploads', formData, {
+    axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/uploads', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
