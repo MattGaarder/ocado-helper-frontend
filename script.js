@@ -42,6 +42,7 @@ document.getElementById("pdfForm").addEventListener("submit", async (event) => {
 async function doBackendCalls(cleanedText) {
     try {
         await axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/ingredients', { ingredients: cleanedText });
+        console.log("🚀 ~ file: script.js:45 ~ doBackendCalls ~ { ingredients: cleanedText }:", { ingredients: cleanedText })
         await axios.get('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/notion');
         console.log('Success handling');
     } catch (error) {
@@ -72,9 +73,41 @@ function getPageText(pageNum, PDFDocumentInstance) {
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.js'; // set path to pdf.worker.js
 
+
+document.getElementById("ingredientsForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const selectedIngredients = [];
+
+    for (let [key, value] of formData) {
+        const ingredientElement = document.querySelector(`input[name="${key}"]`)
+        const location = ingredientElement.getAttribute('data-location');
+        selectedIngredients.push({ name: value, location });
+        console.log("🚀 ~ file: script.js:176 ~ document.getElementById ~ selectedIngredients:", selectedIngredients)
+        
+    }
+
+    // Now, you can send selectedIngredients to MongoDB
+    // And then get that data from Mongo
+    try {
+        await axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/ingredients', { ingredients: selectedIngredients });
+        await axios.get('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/notion');
+        // Success handling
+    } catch (error) {
+        // Error handling
+    }
+});
+
+
+
+
+
 let ingredientNames = [];
 let adjectiveFoods = ["MUSHROOMS", "CHEESE", "STEAKS", "JUICE", "LEAF", "SAUCE", "NOODLES", "BUTTER", "CREAM", "NUTS", "RICE", "ONIONS", "CRISPS", "YOGHURT", "OIL", "PASTA"];        
 let prefixFoods = ["SALMON", "PORK", "BEEF", "CHICKEN", "PASTA", "CHOCOLATE", "BAMBOO"];
+
+
+
 
     
 function isFoodItem(item, database) {
@@ -142,20 +175,20 @@ function cleanText(pdfText, openFoodDatabase) {
     }
    
     }
-    makeStuffFromIngredientsArray(finalIngredients)
+    // makeStuffFromIngredientsArray(finalIngredients)
     return finalIngredients;
     
 };
 
-function removeRedundencies(finalIngredients) {
-    for(let i= 0; i < finalIngredients.length - 1; i++){
-        const nextNameWords = finalIngredients[i + 1].name.split(' ')
-        if(nextNameWords.includes(finalIngredients[i].name)){
-            finalIngredients.splice(i, 1)
-        }
-    }
-    return finalIngredients;
-};
+// function removeRedundencies(finalIngredients) {
+//     for(let i= 0; i < finalIngredients.length - 1; i++){
+//         const nextNameWords = finalIngredients[i + 1].name.split(' ')
+//         if(nextNameWords.includes(finalIngredients[i].name)){
+//             finalIngredients.splice(i, 1)
+//         }
+//     }
+//     return finalIngredients;
+// };
 
 const ingredientsDOM = document.querySelector('.ingredientsList');
 const submitButton = document.querySelector('submit-btn');
@@ -170,41 +203,18 @@ document.getElementById("sync-btn").addEventListener("click", async function(eve
     }
 })
 
-function makeStuffFromIngredientsArray(finalIngredients){
-    removeRedundencies(finalIngredients);
-    const allIngredients = finalIngredients.map((ingredient, index) => {
-        console.log("🚀 ~ file: script.js:158 ~ allIngredients ~ ingredient:", ingredient)
-        return `<label class="ingredient-label">
-                    <input type="checkbox" name="ingredient${index}" value="${ingredient.name}" data-location="${ingredient.location}"  class="ingredient">
-                        ${ingredient.name}
-                </label><br>`
-    }).join('');
-    ingredientsDOM.innerHTML = allIngredients;
-}
+// function makeStuffFromIngredientsArray(finalIngredients){
+//     removeRedundencies(finalIngredients);
+//     const allIngredients = finalIngredients.map((ingredient, index) => {
+//         console.log("🚀 ~ file: script.js:158 ~ allIngredients ~ ingredient:", ingredient)
+//         return `<label class="ingredient-label">
+//                     <input type="checkbox" name="ingredient${index}" value="${ingredient.name}" data-location="${ingredient.location}"  class="ingredient">
+//                         ${ingredient.name}
+//                 </label><br>`
+//     }).join('');
+//     ingredientsDOM.innerHTML = allIngredients;
+// }
 
-document.getElementById("ingredientsForm").addEventListener("submit", async function(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const selectedIngredients = [];
-
-    for (let [key, value] of formData) {
-        const ingredientElement = document.querySelector(`input[name="${key}"]`)
-        const location = ingredientElement.getAttribute('data-location');
-        selectedIngredients.push({ name: value, location });
-        console.log("🚀 ~ file: script.js:176 ~ document.getElementById ~ selectedIngredients:", selectedIngredients)
-        
-    }
-
-    // Now, you can send selectedIngredients to MongoDB
-    // And then get that data from Mongo
-    try {
-        await axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/ingredients', { ingredients: selectedIngredients });
-        await axios.get('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/notion');
-        // Success handling
-    } catch (error) {
-        // Error handling
-    }
-});
 
 
 // When you construct the form and its checkboxes, you're using this format for the name attribute:
