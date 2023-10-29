@@ -160,7 +160,7 @@ document.getElementById("sync-btn").addEventListener("click", async function(eve
     event.preventDefault();
     console.log('sync pressed')
     try {
-        await axios.post('/api/v1/notion/sync')
+        await axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/notion/sync')
     } catch(error){
         console.log('sync error')
     }
@@ -194,8 +194,8 @@ document.getElementById("ingredientsForm").addEventListener("submit", async func
     // Now, you can send selectedIngredients to MongoDB
     // And then get that data from Mongo
     try {
-        await axios.post('/api/v1/ingredients', { ingredients: selectedIngredients });
-        await axios.get('/api/v1/notion');
+        await axios.post('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/ingredients', { ingredients: selectedIngredients });
+        await axios.get('https://sleepy-hamlet-41974-03ab43335a23.herokuapp.com/api/v1/notion');
         // Success handling
     } catch (error) {
         // Error handling
